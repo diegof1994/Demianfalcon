@@ -14,7 +14,7 @@ export function Hero({ onOpenFiscal }: HeroProps) {
     <section id="inicio" aria-labelledby="hero-title" className="relative overflow-hidden bg-navy-900 pt-[4.25rem] lg:pt-[4.75rem]">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,#16336a_0%,#0b1f42_45%,#061430_100%)]" aria-hidden="true" />
       <WireGlobe className="absolute -bottom-40 -left-40 size-[34rem] opacity-60" />
-      <div className="absolute -top-40 right-[-10%] size-[42rem] rounded-full bg-sol-400/15 blur-3xl" aria-hidden="true" />
+      <div className="absolute -top-40 right-[-10%] size-[42rem] rounded-full bg-[radial-gradient(circle,rgba(201,164,92,0.22),transparent_65%)]" aria-hidden="true" />
       <div className="absolute bottom-[-12rem] left-1/2 h-[24rem] w-[60rem] -translate-x-1/2 rounded-[100%] bg-[radial-gradient(ellipse,rgba(232,197,120,0.35),transparent_65%)]" aria-hidden="true" />
       <TechBackground />
 
@@ -138,7 +138,7 @@ export function Hero({ onOpenFiscal }: HeroProps) {
 function Portrait() {
   return (
     <figure className="relative">
-      <div className="absolute -inset-4 rounded-[2.25rem] bg-gradient-to-br from-sol-400/40 via-transparent to-celeste-400/30 blur-2xl" aria-hidden="true" />
+      <div className="absolute -inset-6 rounded-[2.5rem] bg-[radial-gradient(ellipse_at_top_left,rgba(201,164,92,0.35),transparent_60%),radial-gradient(ellipse_at_bottom_right,rgba(141,184,232,0.25),transparent_60%)]" aria-hidden="true" />
       <div className="glow-gold relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-2xl">
         <img
           src={CAMPAIGN.portrait}

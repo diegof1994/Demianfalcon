@@ -46,7 +46,7 @@ export function Navbar({ onOpenFiscal }: NavbarProps) {
     <header
       className={cn(
         'fixed inset-x-0 top-0 z-40 transition-all duration-300',
-        scrolled ? 'bg-navy-900/95 shadow-lg shadow-navy-950/20 backdrop-blur-md' : 'bg-navy-900',
+        scrolled ? 'bg-navy-950 shadow-lg shadow-navy-950/30' : 'bg-navy-900',
       )}
     >
       <div className="h-1 w-full bg-gradient-to-r from-transparent via-sol-400 to-transparent" aria-hidden="true" />

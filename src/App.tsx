@@ -12,6 +12,7 @@ import { Tokeniza } from './components/Tokeniza'
 import { Navbar } from './components/Navbar'
 import { Participation } from './components/Participation'
 import { Pillars } from './components/Pillars'
+import { scrollToElement } from './lib/scroll'
 import { TechStrip } from './components/TechStrip'
 
 export default function App() {
@@ -29,12 +30,10 @@ export default function App() {
       const target = id ? document.getElementById(id) : null
       if (!target) return
       e.preventDefault()
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       // Se espera un frame para que el menú móvil empiece a cerrarse antes de desplazar
       requestAnimationFrame(() => {
         const header = document.querySelector('header')?.getBoundingClientRect().height ?? 72
-        const top = target.getBoundingClientRect().top + window.scrollY - header + 1
-        window.scrollTo({ top, behavior: reduce ? 'auto' : 'smooth' })
+        scrollToElement(target, header - 1)
         history.replaceState(null, '', `#${id}`)
         if (id === 'contenido' || id === 'inicio') return
         target.setAttribute('tabindex', '-1')

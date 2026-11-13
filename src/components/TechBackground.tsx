@@ -16,22 +16,43 @@ export function TechBackground({ className = '', density = 0.00009 }: { classNam
   useEffect(() => {
     const canvas = ref.current
     if (!canvas) return
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let nodes: Node[] = []
     let raf = 0
     let w = 0
     let h = 0
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    let visible = false
+    let last = 0
+    let small = false
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
+
+    // Brillo pre-renderizado (evita shadowBlur, que es muy costoso por cuadro)
+    const makeSprite = (rgb: string) => {
+      const c = document.createElement('canvas')
+      c.width = c.height = 24
+      const g = c.getContext('2d')!
+      const grad = g.createRadialGradient(12, 12, 0, 12, 12, 12)
+      grad.addColorStop(0, `rgba(${rgb},1)`)
+      grad.addColorStop(0.25, `rgba(${rgb},0.85)`)
+      grad.addColorStop(1, `rgba(${rgb},0)`)
+      g.fillStyle = grad
+      g.fillRect(0, 0, 24, 24)
+      return c
+    }
+    const goldSprite = makeSprite('232,197,120')
+    const blueSprite = makeSprite('186,214,245')
 
     const resize = () => {
       w = canvas.clientWidth
       h = canvas.clientHeight
-      canvas.width = w * dpr
-      canvas.height = h * dpr
+      small = w < 640
+      canvas.width = Math.round(w * dpr)
+      canvas.height = Math.round(h * dpr)
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      const count = Math.max(28, Math.min(110, Math.round(w * h * density)))
+      const cap = small ? 34 : 80
+      const count = Math.max(20, Math.min(cap, Math.round(w * h * density)))
       nodes = Array.from({ length: count }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
@@ -44,18 +65,19 @@ export function TechBackground({ className = '', density = 0.00009 }: { classNam
 
     const draw = () => {
       ctx.clearRect(0, 0, w, h)
-      const max = 140
+      const max = small ? 110 : 140
+      const max2 = max * max
+      ctx.lineWidth = 0.6
       for (let i = 0; i < nodes.length; i++) {
         const a = nodes[i]
         for (let j = i + 1; j < nodes.length; j++) {
           const b = nodes[j]
           const dx = a.x - b.x
           const dy = a.y - b.y
-          const d = Math.hypot(dx, dy)
-          if (d < max) {
-            const o = (1 - d / max) * 0.35
+          const d2 = dx * dx + dy * dy
+          if (d2 < max2) {
+            const o = (1 - Math.sqrt(d2) / max) * 0.35
             ctx.strokeStyle = a.gold && b.gold ? `rgba(201,164,92,${o})` : `rgba(141,184,232,${o * 0.7})`
-            ctx.lineWidth = 0.6
             ctx.beginPath()
             ctx.moveTo(a.x, a.y)
             ctx.lineTo(b.x, b.y)
@@ -64,44 +86,58 @@ export function TechBackground({ className = '', density = 0.00009 }: { classNam
         }
       }
       for (const n of nodes) {
-        ctx.beginPath()
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2)
-        ctx.fillStyle = n.gold ? 'rgba(232,197,120,0.95)' : 'rgba(186,214,245,0.8)'
-        ctx.shadowColor = n.gold ? 'rgba(232,197,120,0.9)' : 'rgba(141,184,232,0.8)'
-        ctx.shadowBlur = 8
-        ctx.fill()
-        ctx.shadowBlur = 0
+        const size = n.r * 7
+        ctx.drawImage(n.gold ? goldSprite : blueSprite, n.x - size / 2, n.y - size / 2, size, size)
       }
     }
 
-    const tick = () => {
+    const tick = (now: number) => {
+      raf = requestAnimationFrame(tick)
+      // En celulares, 30 cuadros por segundo alcanzan y liberan al navegador para el scroll
+      if (small && now - last < 32) return
+      last = now
       for (const n of nodes) {
-        n.x += n.vx
-        n.y += n.vy
+        n.x += n.vx * (small ? 2 : 1)
+        n.y += n.vy * (small ? 2 : 1)
         if (n.x < 0 || n.x > w) n.vx *= -1
         if (n.y < 0 || n.y > h) n.vy *= -1
       }
       draw()
-      raf = requestAnimationFrame(tick)
+    }
+
+    const start = () => {
+      cancelAnimationFrame(raf)
+      if (reduce) draw()
+      else if (visible && !document.hidden) raf = requestAnimationFrame(tick)
     }
 
     resize()
-    if (reduce) draw()
-    else raf = requestAnimationFrame(tick)
+    draw()
 
+    // Solo se anima mientras está en pantalla
+    const io = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting
+      if (visible) start()
+      else cancelAnimationFrame(raf)
+    })
+    io.observe(canvas)
+
+    let resizeTimer = 0
     const ro = new ResizeObserver(() => {
-      resize()
-      if (reduce) draw()
+      window.clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(() => {
+        resize()
+        draw()
+      }, 150)
     })
     ro.observe(canvas)
-    const onVis = () => {
-      if (document.hidden) cancelAnimationFrame(raf)
-      else if (!reduce) raf = requestAnimationFrame(tick)
-    }
+    const onVis = () => (document.hidden ? cancelAnimationFrame(raf) : start())
     document.addEventListener('visibilitychange', onVis)
     return () => {
       cancelAnimationFrame(raf)
+      io.disconnect()
       ro.disconnect()
+      window.clearTimeout(resizeTimer)
       document.removeEventListener('visibilitychange', onVis)
     }
   }, [density])

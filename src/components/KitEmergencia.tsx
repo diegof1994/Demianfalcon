@@ -9,7 +9,7 @@ export function KitEmergencia() {
     <section id="convocatoria" aria-labelledby="kit-title" className="bg-white py-20 sm:py-28">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
         <Reveal className="relative order-2 lg:order-1">
-          <div className="absolute -inset-3 -rotate-2 rounded-3xl bg-gradient-to-br from-celeste-400 to-sol-400 opacity-40 blur-xl" aria-hidden="true" />
+          <div className="absolute -inset-3 -rotate-2 rounded-3xl bg-gradient-to-br from-celeste-400/40 to-sol-400/40" aria-hidden="true" />
           <motion.img
             whileHover={{ rotate: -1, scale: 1.01 }}
             src={KIT.image}
