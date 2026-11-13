@@ -10,6 +10,7 @@ export const CAMPAIGN = {
   movement: 'Movimiento Nuevo Paradigma',
   slogan: 'Por una Argentina unida, libre y soberana.',
   portrait: '/img/demian-retrato.webp',
+  portraitTech: '/img/demian-tecnologia.webp',
   role: 'Candidato a Presidente de la Nación',
   planTitle: 'Plan Maestro de Gobierno',
   planName: 'El Cambio de Raíz',
@@ -50,3 +51,16 @@ export const QUOTES = [
   'Es momento de dar un salto evolutivo entre el libre mercado, la apertura al mundo y medidas con empatía humana.',
   'Nosotros somos este cambio.',
 ]
+
+/** Cargo y alianza informados en la pieza de la Fundación Cubo Dorado */
+export const CUBO_DORADO = {
+  alliance: 'Ontocracia + Fundación Cubo Dorado',
+  allianceTagline: 'Dos visiones. Un mismo propósito.',
+  role: 'Secretario de Tecnología y Energía de la Fundación Cubo Dorado',
+  network: 'Red de más de 500 fundaciones y organizaciones sociales',
+  commitment:
+    'Me comprometo a cumplir mi gestión de forma eficiente y con excelencia, trabajando con dedicación, responsabilidad y visión estratégica para impulsar la innovación, el desarrollo sostenible y el bienestar de nuestra gente.',
+  motto: 'Juntos hacia un futuro más tecnológico, libre y sostenible.',
+}
+
+export const TECH_AXES = ['Inteligencia Artificial', 'Energías Renovables', 'Innovación Tecnológica', 'Desarrollo Regional'] as const

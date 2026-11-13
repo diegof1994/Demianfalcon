@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, CalendarCheck, FileText, Users } from 'lucide-react'
 import { CAMPAIGN, HERO_STATS } from '../data/campaign'
+import { TechBackground, WireGlobe } from './TechBackground'
 
 interface HeroProps {
   onOpenFiscal: () => void
@@ -12,7 +13,10 @@ export function Hero({ onOpenFiscal }: HeroProps) {
   return (
     <section id="inicio" aria-labelledby="hero-title" className="relative overflow-hidden bg-navy-900 pt-[4.25rem] lg:pt-[4.75rem]">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,#16336a_0%,#0b1f42_45%,#061430_100%)]" aria-hidden="true" />
-      <div className="absolute -top-40 right-[-10%] size-[42rem] rounded-full bg-sol-400/10 blur-3xl" aria-hidden="true" />
+      <WireGlobe className="absolute -bottom-40 -left-40 size-[34rem] opacity-60" />
+      <div className="absolute -top-40 right-[-10%] size-[42rem] rounded-full bg-sol-400/15 blur-3xl" aria-hidden="true" />
+      <div className="absolute bottom-[-12rem] left-1/2 h-[24rem] w-[60rem] -translate-x-1/2 rounded-[100%] bg-[radial-gradient(ellipse,rgba(232,197,120,0.35),transparent_65%)]" aria-hidden="true" />
+      <TechBackground />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-4 pt-12 pb-20 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-10 lg:px-8 lg:pt-20 lg:pb-28">
         <div>
@@ -43,7 +47,7 @@ export function Hero({ onOpenFiscal }: HeroProps) {
           >
             El Cambio
             <br />
-            de <span className="text-sol-400">Raíz.</span>
+            de <span className="text-gold-gradient">Raíz.</span>
           </motion.h1>
 
           <motion.p
@@ -94,7 +98,7 @@ export function Hero({ onOpenFiscal }: HeroProps) {
             {HERO_STATS.map((s) => (
               <div key={s.label} className="flex flex-col-reverse">
                 <dt className="mt-1 text-xs leading-snug text-slate-400 sm:text-sm">{s.label}</dt>
-                <dd className="font-display text-3xl font-bold text-sol-400 sm:text-4xl">{s.value}</dd>
+                <dd className="font-display text-3xl font-bold text-gold-gradient sm:text-4xl">{s.value}</dd>
               </div>
             ))}
           </motion.dl>
@@ -112,7 +116,7 @@ export function Hero({ onOpenFiscal }: HeroProps) {
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.7, ease }}
-            className="absolute -bottom-8 -left-2 max-w-[16rem] rounded-2xl bg-cream p-4 shadow-2xl shadow-navy-950/50 sm:-left-8 sm:p-5"
+            className="absolute -bottom-20 -left-2 max-w-[15rem] rounded-2xl bg-cream p-4 shadow-2xl shadow-navy-950/50 sm:-left-8 sm:p-5"
           >
             <div className="flex items-start gap-3">
               <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-navy-900 text-sol-400">
@@ -135,7 +139,7 @@ function Portrait() {
   return (
     <figure className="relative">
       <div className="absolute -inset-4 rounded-[2.25rem] bg-gradient-to-br from-sol-400/40 via-transparent to-celeste-400/30 blur-2xl" aria-hidden="true" />
-      <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] ring-1 ring-sol-400/50 shadow-2xl">
+      <div className="glow-gold relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-2xl">
         <img
           src={CAMPAIGN.portrait}
           alt={`${CAMPAIGN.candidate}, ${CAMPAIGN.role}`}

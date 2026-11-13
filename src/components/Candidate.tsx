@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Quote } from 'lucide-react'
-import { CAMPAIGN, QUOTES } from '../data/campaign'
+import { CAMPAIGN, CUBO_DORADO, QUOTES } from '../data/campaign'
+import { TechBackground } from './TechBackground'
 import { IDEAS_FUERZA } from '../data/plan'
 import { Reveal, SectionHeader } from './ui'
 
@@ -75,7 +76,41 @@ export function Candidate() {
           </div>
         </div>
 
-        <ul className="mt-20 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        <Reveal className="relative mt-20 overflow-hidden rounded-[2rem] bg-navy-950 shadow-2xl">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,#1d3a6b,transparent_60%)]" aria-hidden="true" />
+          <TechBackground density={0.00012} />
+          <div className="relative grid lg:grid-cols-[0.8fr_1.2fr]">
+            <div className="relative min-h-80">
+              <img
+                src={CAMPAIGN.portraitTech}
+                alt={`${CAMPAIGN.candidate}, ${CUBO_DORADO.role}`}
+                loading="lazy"
+                width={420}
+                height={505}
+                className="absolute inset-0 size-full object-cover object-top"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-navy-950" aria-hidden="true" />
+            </div>
+            <div className="p-8 sm:p-12">
+              <p className="text-xs tracking-[0.3em] text-sol-400 uppercase">El nacimiento de una nueva alianza</p>
+              <h3 className="mt-3 font-display text-3xl font-bold text-cream sm:text-4xl">
+                <span className="text-gold-gradient">{CUBO_DORADO.alliance}</span>
+              </h3>
+              <p className="mt-2 font-display text-lg text-slate-300 italic">{CUBO_DORADO.allianceTagline}</p>
+              <div className="glow-gold mt-8 inline-block rounded-xl bg-navy-900/80 px-5 py-4">
+                <p className="text-xs tracking-[0.2em] text-celeste-400 uppercase">Cargo actual</p>
+                <p className="mt-1 font-display text-lg font-bold text-cream">{CUBO_DORADO.role}</p>
+                <p className="text-sm text-slate-400">{CUBO_DORADO.network}</p>
+              </div>
+              <blockquote className="mt-8 border-l-2 border-sol-400 pl-5 font-display text-lg leading-relaxed text-slate-200">
+                “{CUBO_DORADO.commitment}”
+              </blockquote>
+              <p className="mt-8 font-display text-sm font-bold tracking-[0.18em] text-sol-400 uppercase">{CUBO_DORADO.motto}</p>
+            </div>
+          </div>
+        </Reveal>
+
+        <ul className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {QUOTES.map((q, i) => (
             <motion.li
               key={q}

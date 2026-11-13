@@ -12,6 +12,7 @@ import { Tokeniza } from './components/Tokeniza'
 import { Navbar } from './components/Navbar'
 import { Participation } from './components/Participation'
 import { Pillars } from './components/Pillars'
+import { TechStrip } from './components/TechStrip'
 
 export default function App() {
   const [fiscalOpen, setFiscalOpen] = useState(false)
@@ -29,6 +30,7 @@ export default function App() {
       <Navbar onOpenFiscal={openFiscal} />
       <main id="contenido">
         <Hero onOpenFiscal={openFiscal} />
+        <TechStrip />
         <Candidate />
         <Pillars />
         <Execution />
