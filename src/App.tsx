@@ -32,8 +32,9 @@ export default function App() {
       e.preventDefault()
       // Se espera un frame para que el menú móvil empiece a cerrarse antes de desplazar
       requestAnimationFrame(() => {
-        const header = document.querySelector('header')?.getBoundingClientRect().height ?? 72
-        scrollToElement(target, header - 1)
+        // Solo la barra fija (sin el menú desplegable, que en ese momento se está cerrando)
+        const bar = document.querySelector('header nav')?.getBoundingClientRect().bottom ?? 72
+        scrollToElement(target, bar)
         history.replaceState(null, '', `#${id}`)
         if (id === 'contenido' || id === 'inicio') return
         target.setAttribute('tabindex', '-1')
