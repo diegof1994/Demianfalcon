@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Noto Serif", Georgia, "Times New Roman", serif;
+
+  /* Paleta "Nuevo Paradigma": azul noche, dorado apagado, crema */
+  --color-navy-950: #061430;
+  --color-navy-900: #0b1f42;
+  --color-navy-800: #132c57;
+  --color-navy-700: #1d3a6b;
+  --color-celeste-50: #f2f7fc;
+  --color-celeste-100: #e3eef9;
+  --color-celeste-200: #c6dcf3;
+  --color-celeste-400: #8db8e8;
+  --color-celeste-500: #2f73bf;
+  --color-celeste-700: #1f5596;
+  --color-sol-400: #c9a45c;
+  --color-sol-500: #b8914a;
+  --color-sol-600: #7d5f26;
+  --color-cream: #f3ebdc;
+  --color-paper: #f8f5ef;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  @apply bg-white font-sans text-slate-800 antialiased;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-celeste-500);
+  outline-offset: 2px;
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Marco dorado con esquinas, como la pieza gráfica institucional */
+.gold-frame { position: absolute; inset: 1rem; border: 1px solid rgb(201 164 92 / 0.35); pointer-events: none; }
+.gold-frame::before, .gold-frame::after { content: ""; position: absolute; width: 2.25rem; height: 2.25rem; border-color: #c9a45c; }
+.gold-frame::before { top: -0.5rem; left: -0.5rem; border-top: 2px solid; border-left: 2px solid; }
+.gold-frame::after { bottom: -0.5rem; right: -0.5rem; border-bottom: 2px solid; border-right: 2px solid; }
