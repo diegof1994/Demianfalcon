@@ -114,7 +114,7 @@ export function Pillars() {
           <div
             role="tablist"
             aria-label="Bloques del plan"
-            className={cn('-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:justify-center sm:px-0', searching && 'opacity-50')}
+            className={cn('flex flex-wrap justify-center gap-2', searching && 'opacity-50')}
           >
             {TABS.map((t, i) => {
               const Icon = t.icon
@@ -136,7 +136,7 @@ export function Pillars() {
                   }}
                   onKeyDown={(e) => onTabKey(e, i)}
                   className={cn(
-                    'relative flex shrink-0 items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors',
+                    'relative flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors sm:px-5 sm:py-3',
                     selected ? 'text-cream' : 'bg-white text-slate-700 ring-1 ring-slate-200 hover:text-navy-900 hover:ring-sol-400',
                   )}
                 >
@@ -209,7 +209,9 @@ function ViaLegend() {
 
 function PillarCard({ pillar, index }: { pillar: Pillar; index: number }) {
   const [open, setOpen] = useState(false)
+  const [showActions, setShowActions] = useState(() => typeof window === 'undefined' || window.matchMedia('(min-width: 1024px)').matches)
   const Icon = pillar.icon
+  const actionsId = `pillar-actions-${pillar.number}`
   const block = BLOCKS.find((b) => b.id === pillar.block)!
   const notesId = `pillar-notes-${pillar.number}`
 
@@ -242,8 +244,17 @@ function PillarCard({ pillar, index }: { pillar: Pillar; index: number }) {
         </div>
 
         <div>
-          <p className="text-xs font-bold tracking-wider text-slate-500 uppercase">Acciones en los primeros 100 días</p>
-          <ul className="mt-3 space-y-3">
+          <button
+            type="button"
+            onClick={() => setShowActions((v) => !v)}
+            aria-expanded={showActions}
+            aria-controls={actionsId}
+            className="flex w-full items-center justify-between gap-2 text-left text-xs font-bold tracking-wider text-slate-500 uppercase hover:text-navy-900"
+          >
+            <span>Acciones en los primeros 100 días ({pillar.actions.length})</span>
+            <ChevronDown className={cn('size-4 transition-transform', showActions && 'rotate-180')} aria-hidden="true" />
+          </button>
+          <ul id={actionsId} hidden={!showActions} className="mt-3 space-y-3">
             {pillar.actions.map((a) => (
               <li key={a.text} className="flex gap-3 text-[15px] leading-relaxed text-slate-700">
                 <span className="flex shrink-0 gap-1 pt-0.5">

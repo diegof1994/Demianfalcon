@@ -1,5 +1,5 @@
 import { MotionConfig } from 'framer-motion'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Candidate } from './components/Candidate'
 import { Control } from './components/Control'
 import { Execution } from './components/Execution'
@@ -18,6 +18,32 @@ export default function App() {
   const [fiscalOpen, setFiscalOpen] = useState(false)
   const openFiscal = useCallback(() => setFiscalOpen(true), [])
   const closeFiscal = useCallback(() => setFiscalOpen(false), [])
+
+  // Navegación interna confiable (menú móvil incluido): scroll manual con compensación del header fijo
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return
+      const link = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]')
+      if (!link) return
+      const id = link.getAttribute('href')!.slice(1)
+      const target = id ? document.getElementById(id) : null
+      if (!target) return
+      e.preventDefault()
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      // Se espera un frame para que el menú móvil empiece a cerrarse antes de desplazar
+      requestAnimationFrame(() => {
+        const header = document.querySelector('header')?.getBoundingClientRect().height ?? 72
+        const top = target.getBoundingClientRect().top + window.scrollY - header + 1
+        window.scrollTo({ top, behavior: reduce ? 'auto' : 'smooth' })
+        history.replaceState(null, '', `#${id}`)
+        if (id === 'contenido' || id === 'inicio') return
+        target.setAttribute('tabindex', '-1')
+        target.focus({ preventScroll: true })
+      })
+    }
+    document.addEventListener('click', onClick)
+    return () => document.removeEventListener('click', onClick)
+  }, [])
 
   return (
     <MotionConfig reducedMotion="user">

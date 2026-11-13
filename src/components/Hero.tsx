@@ -116,7 +116,7 @@ export function Hero({ onOpenFiscal }: HeroProps) {
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.7, ease }}
-            className="absolute -bottom-20 -left-2 max-w-[15rem] rounded-2xl bg-cream p-4 shadow-2xl shadow-navy-950/50 sm:-left-8 sm:p-5"
+            className="relative mt-5 rounded-2xl bg-cream p-4 shadow-2xl shadow-navy-950/50 sm:p-5 lg:absolute lg:-bottom-20 lg:-left-8 lg:mt-0 lg:max-w-[15rem]"
           >
             <div className="flex items-start gap-3">
               <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-navy-900 text-sol-400">

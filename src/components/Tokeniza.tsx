@@ -18,7 +18,7 @@ export function Tokeniza() {
         {/* Encabezado */}
         <div className="flex items-center justify-between text-xs font-semibold tracking-[0.3em] uppercase">
           <span className="text-sol-400">Nuevo Paradigma</span>
-          <span className="text-celeste-400">Pilar 10 · Fondo Nacional Digital</span>
+          <span className="hidden text-celeste-400 sm:inline">Pilar 10 · Fondo Nacional Digital</span>
         </div>
         <Reveal className="mt-14 max-w-5xl">
           <p className="text-sm tracking-[0.3em] text-slate-300 uppercase">{T.kicker}</p>

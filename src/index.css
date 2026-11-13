@@ -23,13 +23,18 @@
 }
 
 html {
-  scroll-behavior: smooth;
   scroll-padding-top: 5rem;
+  overflow-x: clip;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
+body {
+  overflow-x: clip;
 }
+
+section[tabindex="-1"]:focus {
+  outline: none;
+}
+
 
 body {
   @apply bg-white font-sans text-slate-800 antialiased;

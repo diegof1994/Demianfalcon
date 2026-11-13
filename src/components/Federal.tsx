@@ -81,7 +81,7 @@ export function Federal() {
         </div>
 
         <div className="mt-14 grid items-start gap-10 lg:grid-cols-[minmax(0,340px)_1fr] lg:gap-14">
-          <Reveal className="mx-auto w-full max-w-[320px]">
+          <Reveal className="mx-auto w-full max-w-[270px] sm:max-w-[320px]">
             <div className="rounded-3xl bg-navy-900 p-5 sm:p-6">
               <div
                 className="grid gap-1.5"

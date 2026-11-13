@@ -9,7 +9,7 @@ const WORDS = ['Tecnología', 'Energía', 'Desarrollo', 'Integración regional',
 export function TechStrip() {
   return (
     <section aria-label="Ejes de tecnología y desarrollo" className="relative overflow-hidden border-y border-sol-400/30 bg-navy-950">
-      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 md:grid-cols-4 lg:px-8">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-4 gap-y-6 px-4 py-10 sm:px-6 md:grid-cols-4 lg:px-8">
         {TECH_AXES.map((label, i) => {
           const Icon = ICONS[i]
           return (
@@ -19,12 +19,12 @@ export function TechStrip() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
-              className="flex items-center gap-4"
+              className="flex min-w-0 items-center gap-3 sm:gap-4"
             >
-              <span className="glow-gold flex size-14 shrink-0 items-center justify-center rounded-full bg-navy-900 text-sol-400">
+              <span className="glow-gold flex size-11 shrink-0 sm:size-14 items-center justify-center rounded-full bg-navy-900 text-sol-400">
                 <Icon className="size-6" aria-hidden="true" />
               </span>
-              <span className="font-display text-sm leading-tight font-bold tracking-[0.12em] text-cream uppercase">{label}</span>
+              <span className="min-w-0 font-display text-xs leading-tight font-bold tracking-[0.06em] text-cream uppercase sm:text-sm sm:tracking-[0.12em]">{label}</span>
             </motion.div>
           )
         })}
