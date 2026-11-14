@@ -26,6 +26,14 @@ Todo el contenido está separado del diseño, en `src/data/`:
 Colores y tipografías: `src/index.css` (bloque `@theme`).
 Imágenes: `public/img/`. PDF del plan: `public/plan-maestro-de-gobierno.pdf`.
 
+## Formularios, medición y reportes (Supabase)
+
+- Proyecto Supabase **demianfalcon-campania** (región São Paulo).
+- `inscripciones`: datos de los formularios. La web solo puede llamar a `registrar_inscripcion`; la tabla no se puede leer desde el navegador.
+- `eventos`: medición anónima (visitas, secciones, clics, formularios, descargas). Sin cookies, sin IP; se ignoran robots y navegadores automáticos.
+- Panel privado: **/reportes/**, protegido con clave (guardada con hash; 10 intentos fallidos bloquean 15 minutos). Para cambiar la clave, en el SQL Editor de Supabase:
+  `update config_privada set valor = extensions.crypt('NUEVA-CLAVE', extensions.gen_salt('bf', 10)) where clave = 'clave_reportes';`
+
 ## Deploy
 
 Render (Static Site): build `npm ci && npm run build`, publish `dist`. Cada push a `main` redespliega solo.

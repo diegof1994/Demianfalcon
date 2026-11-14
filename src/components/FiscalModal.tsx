@@ -1,9 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { CheckCircle2, ClipboardCheck, Loader2, X } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, ClipboardCheck, Loader2, X } from 'lucide-react'
 import { useEffect, useId, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { PROVINCE_NAMES } from '../data/federal'
-import { confirmationCode, isValidDni, isValidEmail, isValidPhone } from '../lib/utils'
+import { track } from '../lib/analytics'
+import { registrarInscripcion } from '../lib/api'
+import { isValidDni, isValidEmail, isValidPhone } from '../lib/utils'
 import { FieldError, inputClass, labelClass } from './ui'
 
 interface FiscalModalProps {
@@ -29,11 +31,16 @@ export function FiscalModal({ open, onClose }: FiscalModalProps) {
   const [errors, setErrors] = useState<Partial<Record<keyof Fields, string>>>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'done'>('idle')
   const [code, setCode] = useState('')
+  const [submitError, setSubmitError] = useState('')
+  const doneRef = useRef<HTMLButtonElement>(null)
+  const started = useRef(false)
 
   // Bloqueo de scroll, foco inicial, Escape y trampa de foco
   useEffect(() => {
     if (!open) return
     lastFocused.current = document.activeElement as HTMLElement
+    track('form_abierto', 'modal_fiscal')
+    started.current = false
     document.body.style.overflow = 'hidden'
     const t = window.setTimeout(() => dialogRef.current?.querySelector<HTMLElement>('input, button')?.focus(), 60)
     const onKey = (e: KeyboardEvent) => {
@@ -66,18 +73,24 @@ export function FiscalModal({ open, onClose }: FiscalModalProps) {
     const t = window.setTimeout(() => {
       setF(EMPTY)
       setErrors({})
+      setSubmitError('')
       setStatus('idle')
     }, 300)
     return () => window.clearTimeout(t)
   }, [open])
 
   const set = (k: keyof Fields, v: string) => {
+    if (!started.current) {
+      started.current = true
+      track('form_iniciado', 'modal_fiscal')
+    }
     setF((p) => ({ ...p, [k]: v }))
     if (errors[k]) setErrors((e) => ({ ...e, [k]: undefined }))
   }
 
   const submit = (e: FormEvent) => {
     e.preventDefault()
+    if (status === 'sending') return
     const errs: Partial<Record<keyof Fields, string>> = {}
     if (f.name.trim().split(/\s+/).length < 2) errs.name = 'Ingresá nombre y apellido.'
     if (!isValidDni(f.dni)) errs.dni = 'DNI de 7 u 8 números, sin puntos.'
@@ -91,11 +104,34 @@ export function FiscalModal({ open, onClose }: FiscalModalProps) {
       return
     }
     setStatus('sending')
-    window.setTimeout(() => {
-      setCode(confirmationCode('FIS'))
-      setStatus('done')
-    }, 1000)
+    setSubmitError('')
+    const [nombre, ...resto] = f.name.trim().split(/\s+/)
+    registrarInscripcion({
+      tipo: 'fiscal',
+      origen: 'modal',
+      nombre,
+      apellido: resto.join(' '),
+      dni: f.dni,
+      email: f.email,
+      telefono: f.phone,
+      provincia: f.province,
+    })
+      .then((c) => {
+        setCode(c)
+        setStatus('done')
+        track('form_enviado', 'modal_fiscal')
+      })
+      .catch((err: Error) => {
+        track('form_error', 'modal_fiscal')
+        setSubmitError(err.message)
+        setStatus('idle')
+      })
   }
+
+  // Tras confirmar, el foco pasa al botón "Listo" para que el teclado y los lectores de pantalla no se pierdan
+  useEffect(() => {
+    if (status === 'done') doneRef.current?.focus()
+  }, [status])
 
   const id = (k: keyof Fields) => `${uid}-${k}`
 
@@ -136,7 +172,7 @@ export function FiscalModal({ open, onClose }: FiscalModalProps) {
                 <p className="mt-4 text-sm text-slate-600">
                   Código: <strong className="font-mono text-navy-900">{code}</strong>
                 </p>
-                <button type="button" onClick={onClose} className="mt-8 w-full rounded-full bg-navy-900 py-3 font-bold text-white hover:bg-navy-800">
+                <button ref={doneRef} type="button" onClick={onClose} className="mt-8 w-full rounded-full bg-navy-900 py-3 font-bold text-white hover:bg-navy-800">
                   Listo
                 </button>
               </div>
@@ -174,6 +210,12 @@ export function FiscalModal({ open, onClose }: FiscalModalProps) {
                   </select>
                   <FieldError id={`${id('province')}-e`} message={errors.province} />
                 </div>
+                {submitError && (
+                  <p role="alert" className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-800">
+                    <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                    {submitError}
+                  </p>
+                )}
                 <button type="submit" disabled={status === 'sending'} className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-sol-400 py-3.5 font-bold text-navy-950 shadow-md transition-colors hover:bg-sol-500 disabled:opacity-70">
                   {status === 'sending' ? (
                     <>
@@ -183,7 +225,7 @@ export function FiscalModal({ open, onClose }: FiscalModalProps) {
                     'Quiero ser fiscal'
                   )}
                 </button>
-                <p className="text-center text-xs text-slate-500">Tus datos se usan solo para coordinar la fiscalización (Ley 25.326).</p>
+                <p className="text-center text-xs text-slate-600">Tus datos se usan solo para coordinar la fiscalización (Ley 25.326).</p>
               </form>
             )}
           </motion.div>

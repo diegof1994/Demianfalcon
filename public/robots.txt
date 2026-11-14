@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /reportes
+
+Sitemap: https://demianfalcon.onrender.com/sitemap.xml

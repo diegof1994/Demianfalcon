@@ -108,11 +108,20 @@ export function TechBackground({ className = '', density = 0.00009 }: { classNam
     const start = () => {
       cancelAnimationFrame(raf)
       if (reduce) draw()
-      else if (visible && !document.hidden) raf = requestAnimationFrame(tick)
+      else if (ready && visible && !document.hidden) raf = requestAnimationFrame(tick)
     }
 
     resize()
     draw()
+
+    // La animación arranca cuando la página ya cargó y el navegador está libre
+    let ready = false
+    const idle = (cb: () => void) =>
+      typeof window.requestIdleCallback === 'function' ? window.requestIdleCallback(cb, { timeout: 2500 }) : setTimeout(cb, 1200)
+    idle(() => {
+      ready = true
+      start()
+    })
 
     // Solo se anima mientras está en pantalla
     const io = new IntersectionObserver(([entry]) => {

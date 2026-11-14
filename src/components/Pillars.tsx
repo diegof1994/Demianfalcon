@@ -27,7 +27,12 @@ function matches(p: Pillar, q: string) {
   const text = normalize(
     [p.title, p.promise, ...p.actions.map((a) => a.text), ...p.notes.map((n) => n.text), ...p.keywords, `pilar ${p.number}`].join(' '),
   )
-  return q.split(/\s+/).filter(Boolean).every((t) => text.includes(t))
+  const words = new Set(text.split(/[^a-z0-9ñ]+/))
+  // Términos de 3 letras o menos (ej. "ia") deben ser palabra completa; los largos pueden ser parte de una palabra
+  return q
+    .split(/\s+/)
+    .filter(Boolean)
+    .every((t) => (t.length <= 3 ? words.has(t) : text.includes(t)))
 }
 
 export function Pillars() {
@@ -93,7 +98,7 @@ export function Pillars() {
             )}
           </div>
           <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-            <span className="text-sm text-slate-500">Temas:</span>
+            <span className="text-sm text-slate-600">Temas:</span>
             {SUGGESTIONS.map((s) => (
               <button
                 key={s}
@@ -233,7 +238,7 @@ function PillarCard({ pillar, index }: { pillar: Pillar; index: number }) {
             <Icon className="size-3.5" aria-hidden="true" />
             {block.label}
           </p>
-          <h4 className="mt-1 font-display text-xl leading-snug font-bold text-navy-900">{pillar.title}</h4>
+          <h3 className="mt-1 font-display text-xl leading-snug font-bold text-navy-900">{pillar.title}</h3>
         </div>
       </header>
 
@@ -249,7 +254,7 @@ function PillarCard({ pillar, index }: { pillar: Pillar; index: number }) {
             onClick={() => setShowActions((v) => !v)}
             aria-expanded={showActions}
             aria-controls={actionsId}
-            className="flex w-full items-center justify-between gap-2 text-left text-xs font-bold tracking-wider text-slate-500 uppercase hover:text-navy-900"
+            className="flex min-h-11 w-full items-center justify-between gap-2 text-left text-xs font-bold tracking-wider text-slate-600 uppercase hover:text-navy-900"
           >
             <span>Acciones en los primeros 100 días ({pillar.actions.length})</span>
             <ChevronDown className={cn('size-4 transition-transform', showActions && 'rotate-180')} aria-hidden="true" />

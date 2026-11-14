@@ -1,9 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { CheckCircle2, ClipboardCheck, HandHeart, Lightbulb, Loader2, Send } from 'lucide-react'
-import { useId, useState } from 'react'
+import { AlertTriangle, CheckCircle2, ClipboardCheck, HandHeart, Lightbulb, Loader2, Send } from 'lucide-react'
+import { useId, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { PROVINCE_NAMES } from '../data/federal'
-import { cn, confirmationCode, isValidDni, isValidEmail, isValidPhone } from '../lib/utils'
+import { track } from '../lib/analytics'
+import { registrarInscripcion } from '../lib/api'
+import { cn, isValidDni, isValidEmail, isValidPhone } from '../lib/utils'
 import type { ParticipationType } from '../types'
 import { FieldError, inputClass, labelClass, SectionHeader } from './ui'
 
@@ -62,14 +64,28 @@ export function Participation() {
   const [errors, setErrors] = useState<Errors>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'done'>('idle')
   const [code, setCode] = useState('')
+  const [submitError, setSubmitError] = useState('')
+  const opened = useRef(false)
+  const started = useRef(false)
+
+  const onFormFocus = () => {
+    if (opened.current) return
+    opened.current = true
+    track('form_abierto', 'formulario_sumate')
+  }
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) => {
+    if (!started.current) {
+      started.current = true
+      track('form_iniciado', 'formulario_sumate')
+    }
     setForm((f) => ({ ...f, [key]: value }))
     if (errors[key]) setErrors((e) => ({ ...e, [key]: undefined }))
   }
 
   const onSubmit = (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault()
+    if (status === 'sending') return
     const found = validate(form)
     setErrors(found)
     const firstKey = Object.keys(found)[0]
@@ -78,16 +94,44 @@ export function Participation() {
       return
     }
     setStatus('sending')
-    window.setTimeout(() => {
-      setCode(confirmationCode(form.type === 'fiscal' ? 'FIS' : form.type === 'voluntario' ? 'VOL' : 'PRO'))
-      setStatus('done')
-    }, 1100)
+    setSubmitError('')
+    registrarInscripcion({
+      tipo: form.type,
+      origen: 'formulario',
+      nombre: form.firstName,
+      apellido: form.lastName,
+      dni: form.dni,
+      email: form.email,
+      telefono: form.phone,
+      provincia: form.province,
+      localidad: form.city,
+      propuesta: form.type === 'propuesta' ? form.message : undefined,
+    })
+      .then((c) => {
+        setCode(c)
+        setStatus('done')
+        track('form_enviado', 'formulario_sumate')
+        document.getElementById('sumate')?.scrollIntoView({ block: 'start' })
+      })
+      .catch((err: Error) => {
+        track('form_error', 'formulario_sumate')
+        setSubmitError(err.message)
+        setStatus('idle')
+      })
   }
 
   const reset = () => {
     setForm(INITIAL)
     setErrors({})
+    setSubmitError('')
     setStatus('idle')
+  }
+
+  // Al cambiar el tipo de participación, los errores anteriores pueden no aplicar más
+  const changeType = (type: ParticipationType) => {
+    setForm((f) => ({ ...f, type }))
+    setErrors({})
+    setSubmitError('')
   }
 
   const fid = (k: keyof FormState) => `${uid}-${k}`
@@ -148,7 +192,7 @@ export function Participation() {
                 </div>
               </motion.div>
             ) : (
-              <motion.form key="form" noValidate onSubmit={onSubmit} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <motion.form key="form" noValidate onSubmit={onSubmit} onFocus={onFormFocus} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                 <fieldset className="border-b border-slate-200 bg-paper p-6 sm:p-8">
                   <legend className="sr-only">¿Cómo querés participar?</legend>
                   <p className="mb-4 text-sm font-semibold text-navy-900" aria-hidden="true">
@@ -171,7 +215,7 @@ export function Participation() {
                             name={`${uid}-type`}
                             value={o.id}
                             checked={checked}
-                            onChange={() => set('type', o.id)}
+                            onChange={() => changeType(o.id)}
                             className="sr-only"
                           />
                           <span className="flex items-center justify-between">
@@ -259,8 +303,14 @@ export function Participation() {
                   </div>
                 </div>
 
+                {submitError && (
+                  <p role="alert" className="mx-6 mb-6 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-800 sm:mx-8">
+                    <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                    {submitError}
+                  </p>
+                )}
                 <div className="flex flex-col-reverse items-center justify-between gap-4 border-t border-slate-200 bg-paper px-6 py-5 sm:flex-row sm:px-8">
-                  <p className="text-xs text-slate-500">* Campos obligatorios</p>
+                  <p className="text-xs text-slate-600">* Campos obligatorios</p>
                   <motion.button
                     type="submit"
                     disabled={status === 'sending'}

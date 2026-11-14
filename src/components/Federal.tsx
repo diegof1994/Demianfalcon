@@ -103,11 +103,11 @@ export function Federal() {
                       aria-pressed={active}
                       style={{ gridColumnStart: p.col + 1, gridRowStart: p.row + 1 }}
                       className={cn(
-                        'flex aspect-square items-center justify-center rounded-lg text-[11px] font-bold tracking-tight transition-colors sm:text-xs',
+                        'flex aspect-square items-center justify-center rounded-lg font-bold tracking-tight transition-colors', p.code === 'CABA' ? 'text-[9px] sm:text-[10px]' : 'text-[11px] sm:text-xs',
                         active ? 'bg-sol-400 text-navy-950 shadow-lg' : isCapital ? 'bg-celeste-400 text-navy-950' : 'bg-white/10 text-slate-200 hover:bg-white/20',
                       )}
                     >
-                      {p.code === 'CABA' ? 'BA·C' : p.code}
+                      {p.code}
                     </motion.button>
                   )
                 })}

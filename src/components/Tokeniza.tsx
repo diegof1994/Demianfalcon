@@ -236,6 +236,7 @@ export function Tokeniza() {
               <a
                 key={src}
                 href={CAMPAIGN.socials.instagram}
+                data-track="carrusel_tokeniza"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative w-[75%] shrink-0 snap-start overflow-hidden shadow-2xl ring-1 ring-sol-400/30 sm:w-[42%] lg:w-[28%]"
@@ -250,7 +251,7 @@ export function Tokeniza() {
                 {h}
               </span>
             ))}
-            <a href={CAMPAIGN.socials.instagram} target="_blank" rel="noopener noreferrer" className="ml-auto inline-flex items-center gap-2 bg-sol-400 px-5 py-2.5 text-sm font-bold tracking-wide text-navy-950 uppercase hover:bg-sol-500">
+            <a href={CAMPAIGN.socials.instagram} data-track="tokeniza_ver_instagram" target="_blank" rel="noopener noreferrer" className="ml-auto inline-flex items-center gap-2 bg-sol-400 px-5 py-2.5 text-sm font-bold tracking-wide text-navy-950 uppercase hover:bg-sol-500">
               Ver en Instagram <ExternalLink className="size-4" aria-hidden="true" />
             </a>
           </div>

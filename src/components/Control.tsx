@@ -80,7 +80,7 @@ export function Control() {
                         <motion.div id={`risk-${i}`} initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
                           <dl className="grid gap-4 px-6 pb-6 sm:grid-cols-[1fr_1.6fr]">
                             <div className="rounded-xl bg-paper p-4">
-                              <dt className="text-xs font-bold tracking-wider text-slate-500 uppercase">Causa posible</dt>
+                              <dt className="text-xs font-bold tracking-wider text-slate-600 uppercase">Causa posible</dt>
                               <dd className="mt-1 text-sm leading-relaxed text-slate-700">{r.cause}</dd>
                             </div>
                             <div className="rounded-xl bg-navy-900 p-4">

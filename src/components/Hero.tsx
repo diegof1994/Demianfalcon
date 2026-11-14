@@ -69,6 +69,7 @@ export function Hero({ onOpenFiscal }: HeroProps) {
           >
             <motion.a
               href="#plan"
+              data-track="inicio_leer_plan"
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
               className="group inline-flex items-center justify-center gap-2 rounded-full bg-cream px-7 py-3.5 text-base font-bold text-navy-900 shadow-lg shadow-navy-950/30 transition-colors hover:bg-white"
@@ -80,6 +81,7 @@ export function Hero({ onOpenFiscal }: HeroProps) {
             <motion.button
               type="button"
               onClick={onOpenFiscal}
+              data-track="inicio_sumate_fiscalizar"
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
               className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-sol-400 px-7 py-3 text-base font-bold text-sol-400 transition-colors hover:bg-sol-400 hover:text-navy-950"

@@ -59,7 +59,7 @@ export function Candidate() {
                     whileHover={{ x: 4 }}
                     className="group flex gap-5 rounded-2xl border border-slate-200 bg-paper p-6 transition-colors hover:border-sol-400/60 hover:bg-white hover:shadow-lg hover:shadow-navy-900/5"
                   >
-                    <span className="font-display text-3xl font-bold text-sol-400" aria-hidden="true">
+                    <span className="font-display text-3xl font-bold text-sol-600" aria-hidden="true">
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <div>

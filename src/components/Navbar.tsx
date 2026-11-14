@@ -38,8 +38,15 @@ export function Navbar({ onOpenFiscal }: NavbarProps) {
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
+    // Si la persona desliza la página con el menú abierto, se cierra
+    const startY = window.scrollY
+    const onScroll = () => Math.abs(window.scrollY - startY) > 40 && setOpen(false)
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('scroll', onScroll)
+    }
   }, [open])
 
   return (
@@ -51,7 +58,7 @@ export function Navbar({ onOpenFiscal }: NavbarProps) {
     >
       <div className="h-1 w-full bg-gradient-to-r from-transparent via-sol-400 to-transparent" aria-hidden="true" />
       <nav aria-label="Navegación principal" className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:h-[4.5rem] lg:px-8">
-        <a href="#inicio" className="flex items-center gap-3 rounded-lg" aria-label={`${CAMPAIGN.candidate} — Ir al inicio`}>
+        <a href="#inicio" className="flex items-center gap-3 rounded-lg" title="Ir al inicio">
           <Logo className="h-9 lg:h-10" />
           <span className="leading-tight">
             <span className="block font-display text-[15px] font-bold text-cream sm:text-base">{CAMPAIGN.candidate}</span>
@@ -66,6 +73,7 @@ export function Navbar({ onOpenFiscal }: NavbarProps) {
             <li key={link.id}>
               <a
                 href={`#${link.id}`}
+                data-track={`menu_${link.id}`}
                 aria-current={active === link.id ? 'true' : undefined}
                 className={cn(
                   'relative rounded-lg px-2.5 py-2 text-sm font-medium xl:px-3 transition-colors',
@@ -85,6 +93,7 @@ export function Navbar({ onOpenFiscal }: NavbarProps) {
           <motion.button
             type="button"
             onClick={onOpenFiscal}
+            data-track="menu_fiscaliza"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             className="hidden items-center gap-2 rounded-full bg-sol-400 px-5 py-2.5 text-sm font-bold text-navy-950 shadow-md shadow-sol-500/30 transition-colors hover:bg-sol-500 sm:inline-flex"
@@ -119,6 +128,7 @@ export function Navbar({ onOpenFiscal }: NavbarProps) {
                 <li key={link.id}>
                   <a
                     href={`#${link.id}`}
+                    data-track={`menu_movil_${link.id}`}
                     onClick={() => setOpen(false)}
                     className={cn(
                       'block rounded-lg px-4 py-3 text-base font-medium',
@@ -132,6 +142,7 @@ export function Navbar({ onOpenFiscal }: NavbarProps) {
               <li className="pt-2">
                 <button
                   type="button"
+                  data-track="menu_movil_fiscaliza"
                   onClick={() => {
                     setOpen(false)
                     onOpenFiscal()

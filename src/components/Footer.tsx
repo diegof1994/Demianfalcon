@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Check, Download, Loader2, Mail, ShieldCheck } from 'lucide-react'
 import { useState } from 'react'
 import { CAMPAIGN, NAV_LINKS } from '../data/campaign'
+import { track } from '../lib/analytics'
 import { Logo } from './Logo'
 
 
@@ -36,6 +37,7 @@ export function Footer() {
   const download = () => {
     if (dl === 'loading') return
     setDl('loading')
+    track('descarga_pdf')
     window.setTimeout(() => {
       const a = document.createElement('a')
       a.href = CAMPAIGN.pdfUrl
@@ -112,10 +114,10 @@ export function Footer() {
 
         <nav aria-label="Secciones">
           <h3 className="text-sm font-semibold tracking-wider text-white uppercase">Secciones</h3>
-          <ul className="mt-4 space-y-2.5 text-sm">
+          <ul className="mt-3 space-y-0.5 text-sm">
             {NAV_LINKS.map((l) => (
               <li key={l.id}>
-                <a href={`#${l.id}`} className="hover:text-white">
+                <a href={`#${l.id}`} className="inline-block py-1.5 hover:text-white">
                   {l.label}
                 </a>
               </li>
@@ -125,20 +127,20 @@ export function Footer() {
 
         <div>
           <h3 className="text-sm font-semibold tracking-wider text-white uppercase">Participá</h3>
-          <ul className="mt-4 space-y-2.5 text-sm">
+          <ul className="mt-3 space-y-0.5 text-sm">
             <li>
-              <a href="#sumate" className="hover:text-white">Ser fiscal de mesa</a>
+              <a href="#sumate" className="inline-block py-1.5 hover:text-white">Ser fiscal de mesa</a>
             </li>
             <li>
-              <a href="#sumate" className="hover:text-white">Sumarme como voluntario</a>
+              <a href="#sumate" className="inline-block py-1.5 hover:text-white">Sumarme como voluntario</a>
             </li>
             <li>
-              <a href="#sumate" className="hover:text-white">Enviar una propuesta</a>
+              <a href="#sumate" className="inline-block py-1.5 hover:text-white">Enviar una propuesta</a>
             </li>
             {CAMPAIGN.email && (
               <li className="flex gap-2 pt-2">
                 <Mail className="mt-0.5 size-4 shrink-0 text-sol-400" aria-hidden="true" />
-                <a href={`mailto:${CAMPAIGN.email}`} className="break-all hover:text-white">{CAMPAIGN.email}</a>
+                <a href={`mailto:${CAMPAIGN.email}`} className="inline-block py-1.5 break-all hover:text-white">{CAMPAIGN.email}</a>
               </li>
             )}
           </ul>
@@ -163,8 +165,8 @@ export function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto max-w-7xl space-y-2 px-4 py-6 text-xs leading-relaxed text-slate-500 sm:px-6 lg:px-8">
-          <p>Publicidad electoral conforme a la Ley 26.215 de Financiamiento de los Partidos Políticos y al Código Electoral Nacional.</p>
+        <div className="mx-auto max-w-7xl space-y-2 px-4 py-6 text-xs leading-relaxed text-slate-400 sm:px-6 lg:px-8">
+          <p>Publicidad electoral conforme a la Ley 26.215 de Financiamiento de los Partidos Políticos y al Código Electoral Nacional. Medimos las visitas de forma anónima, sin cookies; los datos de los formularios se usan solo para coordinar la participación (Ley 25.326).</p>
           <p className="flex flex-col justify-between gap-2 sm:flex-row">
             <span>© 2026 {CAMPAIGN.candidate}. Todos los derechos reservados.</span>
             <span>{CAMPAIGN.movement}</span>

@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { cn } from '../lib/utils'
 
 interface LogoProps {
@@ -6,14 +7,15 @@ interface LogoProps {
 
 /** Isotipo: escudo minimalista con franjas patrias y Sol de Mayo */
 export function Logo({ className }: LogoProps) {
+  const clipId = `shield-clip-${useId().replace(/:/g, '')}`
   return (
     <svg viewBox="0 0 40 46" className={cn('h-10 w-auto', className)} aria-hidden="true">
       <defs>
-        <clipPath id="shield-clip">
+        <clipPath id={clipId}>
           <path d="M20 1.5 37.5 7v15.5c0 10.6-7.4 18.6-17.5 22-10.1-3.4-17.5-11.4-17.5-22V7L20 1.5Z" />
         </clipPath>
       </defs>
-      <g clipPath="url(#shield-clip)">
+      <g clipPath={`url(#${clipId})`}>
         <rect width="40" height="46" fill="#ffffff" />
         <rect width="40" height="15" fill="#8DB8E8" />
         <rect y="31" width="40" height="15" fill="#8DB8E8" />

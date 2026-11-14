@@ -46,10 +46,11 @@ export function KitEmergencia() {
             ))}
           </ul>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a href="#sumate" className="inline-flex items-center justify-center gap-2 rounded-full bg-navy-900 px-7 py-3.5 font-bold text-cream hover:bg-navy-800">
+            <a href="#sumate" data-track="kit_voluntario" className="inline-flex items-center justify-center gap-2 rounded-full bg-navy-900 px-7 py-3.5 font-bold text-cream hover:bg-navy-800">
               <HandHeart className="size-5" aria-hidden="true" /> Quiero ser voluntario
             </a>
             <a
+              data-track="kit_donar"
               href={`mailto:${CAMPAIGN.email}?subject=${encodeURIComponent('Convocatoria Nacional - Kit de emergencia')}`}
               className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-navy-900 px-7 py-3 font-bold text-navy-900 hover:bg-navy-900 hover:text-cream"
             >
